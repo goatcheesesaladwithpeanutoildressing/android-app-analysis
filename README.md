@@ -50,7 +50,7 @@
 - Payload contains device info
 - Payload contains consent string under `gdpr c` key
 
-```json
+```text
 {
   "text": [
     "POST /e/msdk/ads HTTP/1.1\\r\\n",
@@ -95,6 +95,18 @@ BlCADAAAAAYIAAASAMAAAAIRAIIiAAAEAAAmJICABJC4AAAQAQgkgAABUAgAIAABogSFAAAAAAFAAAAA
 AAAAABAAAAAEAMAAAIAAgAAAAAoAQAAAAAgAJCgAAAAAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAABADFAAYAAgrKMAAwABBWUgABgACCsoA\",\"e\":1}}"
 }
 ```
+
+- Can't build a requests graph since we don't have the initiator context, we can only observe
+requests from device to servers, no piggybacking there
+- With some LLMs engineering, we could easily classify hosts and detect possible trackers (fingerprinting, geo data, device info...)
+- We can also create custom frida hooks to hook Java methods such as permission requests
+
+## Static analysis
+- Besides dynamic analysis that shows active threats, we can do some static analysis to identify the landscape of possible threats
+- One common practice is to analyse .dex files from an unzipped APK
+- `dexdump com.example.apk | grep "Class"`
+- Leverage LLMs to classify hosts from installed packages
+- Also, is great to check for "requestable" permissions by parsing the AndroidApplication.xml file
 
 ## Challenges
 - Root detection by apps (banking apps...)
