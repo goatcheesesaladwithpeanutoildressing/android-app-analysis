@@ -44,6 +44,58 @@
 - `fx traffic.json` (or any viz tool)
 - Server hosts should be clear, payloads too!
 
+## Sample decrypted HTTPS request
+- POST https://aax.amazon-adsystem.com/e/msdk/ads
+- Vendor: Amazon
+- Payload contains device info
+- Payload contains consent string under `gdpr c` key
+
+```json
+{
+  "text": [
+    "POST /e/msdk/ads HTTP/1.1\\r\\n",
+    "\\r\\n"
+  ],
+  "_ws_expert": {
+    "http_http_chat": null,
+    "_ws_expert__ws_expert_message": "POST /e/msdk/ads HTTP/1.1\\r\\n",
+    "_ws_expert__ws_expert_severity": "2097152",
+    "_ws_expert__ws_expert_group": "33554432"
+  },
+  "http_http_request_method": "POST",
+  "http_http_request_uri": "/e/msdk/ads",
+  "http_http_request_version": "HTTP/1.1",
+  "http_http_accept": "application/json",
+  "http_http_request_line": [
+    "Accept: application/json\r\n",
+    "content-type: application/json; charset=utf-8\r\n",
+    "User-Agent: [redacted]\r\n",
+    "Host: aax.amazon-adsystem.com\r\n",
+    "Connection: Keep-Alive\r\n",
+    "Accept-Encoding: gzip\r\n",
+    "Content-Length: 1274\r\n"
+  ],
+  "http_http_content_type": "application/json; charset=utf-8",
+  "http_http_user_agent": "[redacted]",
+  "http_http_host": "aax.amazon-adsystem.com",
+  "http_http_connection": "Keep-Alive",
+  "http_http_accept_encoding": "gzip",
+  "http_http_content_length_header": "1274",
+  "http_http_content_length": "1274",
+  "http_http_request_full_uri": "https://aax.amazon-adsystem.com/e/msdk/ads",
+  "http_http_request": true,
+  "http_http_request_number": "1",
+  "http_http_response_in": "986",
+  "http_http_file_data": "{\"dinfo\":{\"os\":\"Android\",\"model\":\"[redacted]":\"aps-
+android-9.10.3-GOOGLE_AD_MANAGER\",\"slots\":[{\"sz\":\"320x50\",\"slot\":\"3326843f-fee9-43db-987c-1c3976545d58\",\"slotId\":1,\"supportedMediaTypes\":[\"DISPLAY\"]}],\"appId\":\"5b1d115e-3439-44af-9b0d-
+25a8e571b21a\",\"pj\":{\"autoRefresh\":\"false\",\"mediationName\":\"GOOGLE_AD_MANAGER\",\"fwk\":\"native\"},\"isDTBMobile\":\"true\",\"ua\":\"Mozilla\\/5.0 ([redacted]; wv) AppleWebKit\\/537.36
+(KHTML, like Gecko) Version\\/4.0 Chrome\\/132.0.6834.122 Mobile
+Safari\\/537.36\",\"pkg\":{\"lbl\":\"leboncoin\",\"pn\":\"fr.leboncoin\",\"v\":\"100039100\",\"vn\":\"100.39.1\"},\"gdpr\":{\"c\":\"CQMZ9MAQMZ9MAAHABAFRBbFoAPLgAELgAAAAJoNB_G_dTSFi8X51YPtgcQ1P4VAjogAABgaJAwwBiBLAMIwEhmAIIADqACACABAAICRAAQ
+BlCADAAAAAYIAAASAMAAAAIRAIIiAAAEAAAmJICABJC4AAAQAQgkgAABUAgAIAABogSFAAAAAAFAAAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAACAAAEAAEAFAAAAAAAAAAAAAAAAAMELwATDQqIACwJCQg0DCAAACoIAgAgAAAAAJAwQAABAgAEAYACjAAAAAFAAAAAAAAABAAAAAAgAQgAAAAIEAAAAAEAAAAEAgEABAA
+AAAAABAAAAAEAMAAAIAAgAAAAAoAQAAAAAgAJCgAAAAAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAABADFAAYAAgrKMAAwABBWUgABgACCsoA\",\"e\":1}}"
+}
+```
+
 ## Challenges
 - Root detection by apps (banking apps...)
 - SSL pinning
