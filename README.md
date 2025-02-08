@@ -1,5 +1,6 @@
 # android-app-analysis
 
+## Setup your first HTTPS traffic analysis
 
 ### Root a phone (Android)
 - Recovery
@@ -32,10 +33,18 @@
 - `adb install com.example.apk` / `adb install-multiple split-apk1 split-apk2 split-apk3`
 
 ### Capture network and log the ssl keys
+- Download frida-server and push it to the device
+- `adb shell` then exec it
 - Launch the app
 - Listen to SSL keys R/W w/ `fritap -m -k keys.log --enable_spawn_gating [APP_PID] &`
 - Listen to the traffic on the WiFi interface `tcpdump -i wlan0 -w traffic.pcap`
 - `fg` and cancel ssl keys listener
 - Decrypt traffic `editcap --inject-secrets tls,keys.log traffic.pcap decrypted_traffic.pcapng`
 - Generate a human readable JSON file `tshark -2 -T ek --enable-protocol communityid -Ndmn -r decrypted_traffic.pcapng > traffic.json`
-- fx traffic.json (or any viz tool)
+- `fx traffic.json` (or any viz tool)
+- Server hosts should be clear, payloads too!
+
+## Challenges
+- Root detection by apps (banking apps...)
+- SSL pinning
+- Not all TLS libs supported
