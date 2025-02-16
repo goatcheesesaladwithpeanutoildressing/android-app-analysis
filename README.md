@@ -88,19 +88,19 @@
 
 ### Install an APK
 - (Optional) Install [apkeep](https://github.com/EFForg/apkeep)
-- Downloaod an APK
+- Download an APK
 - Install the APK: `adb install com.example.apk`
 - In case the APK is splitted into multiple APKs: `adb install-multiple split-apk1 split-apk2 split-apk3`
 
 ## Decrypt HTTPS network traffic
 It requires two components:
 - Some network traffic (ie: tcpdump pcap file)
-- The TLS keys in NSS KL Format
+- The TLS keys in [NSS Key Log Format](https://nss-crypto.org/reference/security/nss/legacy/key_log_format/index.html)
 
 ### Capture the network traffic
 - Listen to the server's WiFi interface: `tcpdump -i wlan0 -w traffic.pcap`
 
-### Grab the TLS keys in NSS Format
+### Grab the TLS keys in NSS Key Log Format
 - Download [frida-server Android ARM64](https://github.com/frida/frida/releases) and push it to the device:
   ```sh
   unxz frida-server.xz
