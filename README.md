@@ -221,6 +221,7 @@ In the below schema, we can clearly highlight the relationships between the host
 - Also, is great to check for "requestable" permissions by parsing the AndroidApplication.xml file
 
 ## Talk about
+- Interaction with consent banners
 - Virtualization? How to get rid of physical links between the components
 - Root detection by apps (banking apps...)
 - SSL pinning
