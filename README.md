@@ -2,7 +2,7 @@
 
 ## Requirements
 - An android phone, pre-rooted if you wanna save some time
-- A RPI4/5 or anything that can run a linux distro, with an ethernet and a WiFi interfaces
+- A RPI4/5 or anything that can run a linux distro ARM64, with an ethernet and a WiFi interfaces
 - At least 64 GB of storage for the server, I recommend 256 GB
 - An ethernet cable to connect the server to the network
 - A USB-[insert type] cable to connect the phone to the server
@@ -10,6 +10,8 @@
 - A keyboard
 - (Optional) A brain
 - ChatGPT
+
+## Setup
 
 ### Grant root priviledges to the phone
 - Enter into recovery mode
@@ -74,30 +76,47 @@
   ```
 - (Optional, if conflict on port :53): `sudo nano /etc/systemd/resolved.conf` & add `DNSStubListener=no`
 
-### Connect phone to MITM
-- Connect to the WAP
-- Plug it to MITM USB
-- Allow any access permissions
+### Connect the phone to the server
+- Connect the phone to the server's WiFi
+- Plug it to server with a USB cable
+- (Allow any access permissions)
 - `adb devices` should print the attached device id
 - `adb shell` should ssh to the phone
 - `su` inside the shell gives you root priviledges
 
 ### Install an APK
-- Install apkeep
-- Unzip the APK if necessary
-- `adb install com.example.apk` / `adb install-multiple split-apk1 split-apk2 split-apk3`
+- (Optional) Install [apkeep](https://github.com/EFForg/apkeep)
+- Downloaod an APK
+- Install the APK: `adb install com.example.apk`
+- In case the APK is splitted into multiple APKs: `adb install-multiple split-apk1 split-apk2 split-apk3`
 
-### Capture network and log the ssl keys
-- Download frida-server and push it to the device
-- `adb shell` then exec it
-- Launch the app
-- Listen to SSL keys R/W w/ `fritap -m -k keys.log --enable_spawn_gating [APP_PID] &`
-- Listen to the traffic on the WiFi interface `tcpdump -i wlan0 -w traffic.pcap`
-- `fg` and cancel ssl keys listener
-- Decrypt traffic `editcap --inject-secrets tls,keys.log traffic.pcap decrypted_traffic.pcapng`
+## Decrypt HTTPS network traffic
+It requires two components:
+- Some network traffic (ie: tcpdump pcap file)
+- The TLS keys in NSS KL Format
+
+### Capture the network traffic
+- Listen to the server's WiFi interface: `tcpdump -i wlan0 -w traffic.pcap`
+
+### Grab the TLS keys in NSS Format
+- Download [frida-server Android ARM64](https://github.com/frida/frida/releases) and push it to the device:
+  ```sh
+  unxz frida-server.xz
+  adb root # might be required
+  adb push frida-server /data/local/tmp/
+  adb shell "chmod 755 /data/local/tmp/frida-server"
+  adb shell "/data/local/tmp/frida-server &"
+  ```
+- Frida will run in background
+- Launch any app then run `fritap -m -k ssl_keys.log --enable_spawn_gating [APP_PID] &`
+- App's PID can be found with: `adb shell "ps | grep com.machintruc.myapp"`
+- Think of Frida as a Tampermonkey/Greasemonkey app. It allows you to inject scripts/extensions/hooks into running apps.
+- Fritap provides [hooks to catch TLS keys](https://lolcads.github.io/posts/2022/08/fritap/).
+
+### Decrypt the traffic
+- Decrypt traffic: `editcap --inject-secrets tls,ssl_keys.log traffic.pcap decrypted_traffic.pcapng`
 - Generate a human readable JSON file `tshark -2 -T ek --enable-protocol communityid -Ndmn -r decrypted_traffic.pcapng > traffic.json`
 - `fx traffic.json` (or any viz tool)
-- Server hosts should be clear, payloads too!
 
 ## Sample decrypted HTTPS request
 - POST https://aax.amazon-adsystem.com/e/msdk/ads
@@ -151,11 +170,6 @@ AAAAABAAAAAEAMAAAIAAgAAAAAoAQAAAAAgAJCgAAAAAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAA
 }
 ```
 
-- Can't build a requests graph since we don't have the initiator context, we can only observe
-requests from device to servers, no piggybacking there
-- With some LLMs engineering, we could easily classify hosts and detect possible trackers (fingerprinting, geo data, device info...)
-- We can also create custom frida hooks to hook Java methods such as permission requests
-
 ## Static analysis
 - Besides dynamic analysis that shows active threats, we can do some static analysis to identify the landscape of possible threats
 - One common practice is to analyse .dex files from an unzipped APK
@@ -167,3 +181,6 @@ requests from device to servers, no piggybacking there
 - Root detection by apps (banking apps...)
 - SSL pinning
 - Not all TLS libs supported
+- Piggybacking???
+- With some LLMs engineering, we could easily classify hosts and detect possible trackers (fingerprinting, geo data, device info...)
+- We can also create custom frida hooks to hook Java methods such as permission requests
