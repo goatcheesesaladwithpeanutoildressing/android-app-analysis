@@ -127,7 +127,7 @@ It requires two components:
 - Payload contains device info
 - Payload contains consent string under `gdpr c` key
 
-```text
+```json
 {
   "text": [
     "POST /e/msdk/ads HTTP/1.1\\r\\n",
@@ -163,13 +163,39 @@ It requires two components:
   "http_http_request": true,
   "http_http_request_number": "1",
   "http_http_response_in": "986",
-  "http_http_file_data": "{\"dinfo\":{\"os\":\"Android\",\"model\":\"[redacted]":\"aps-
-android-9.10.3-GOOGLE_AD_MANAGER\",\"slots\":[{\"sz\":\"320x50\",\"slot\":\"3326843f-fee9-43db-987c-1c3976545d58\",\"slotId\":1,\"supportedMediaTypes\":[\"DISPLAY\"]}],\"appId\":\"5b1d115e-3439-44af-9b0d-
-25a8e571b21a\",\"pj\":{\"autoRefresh\":\"false\",\"mediationName\":\"GOOGLE_AD_MANAGER\",\"fwk\":\"native\"},\"isDTBMobile\":\"true\",\"ua\":\"Mozilla\\/5.0 ([redacted]; wv) AppleWebKit\\/537.36
-(KHTML, like Gecko) Version\\/4.0 Chrome\\/132.0.6834.122 Mobile
-Safari\\/537.36\",\"pkg\":{\"lbl\":\"leboncoin\",\"pn\":\"fr.leboncoin\",\"v\":\"100039100\",\"vn\":\"100.39.1\"},\"gdpr\":{\"c\":\"CQMZ9MAQMZ9MAAHABAFRBbFoAPLgAELgAAAAJoNB_G_dTSFi8X51YPtgcQ1P4VAjogAABgaJAwwBiBLAMIwEhmAIIADqACACABAAICRAAQ
-BlCADAAAAAYIAAASAMAAAAIRAIIiAAAEAAAmJICABJC4AAAQAQgkgAABUAgAIAABogSFAAAAAAFAAAAAAAAAAAAAAAAAAAQAAAAAAAAgAAAAAACAAAEAAEAFAAAAAAAAAAAAAAAAAMELwATDQqIACwJCQg0DCAAACoIAgAgAAAAAJAwQAABAgAEAYACjAAAAAFAAAAAAAAABAAAAAAgAQgAAAAIEAAAAAEAAAAEAgEABAA
-AAAAABAAAAAEAMAAAIAAgAAAAAoAQAAAAAgAJCgAAAAAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAABADFAAYAAgrKMAAwABBWUgABgACCsoA\",\"e\":1}}"
+  "http_http_file_data": {
+    "dinfo": {
+      "os": "Android",
+      "model": "[redacted]",
+      "aps-android": "9.10.3-GOOGLE_AD_MANAGER",
+      "slots": [
+        {
+          "sz": "320x50",
+          "slot": "3326843f-fee9-43db-987c-1c3976545d58",
+          "slotId": 1,
+          "supportedMediaTypes": ["DISPLAY"]
+        }
+      ],
+      "appId": "5b1d115e-3439-44af-9b0d-25a8e571b21a",
+      "pj": {
+        "autoRefresh": "false",
+        "mediationName": "GOOGLE_AD_MANAGER",
+        "fwk": "native"
+      },
+      "isDTBMobile": "true",
+      "ua": "Mozilla/5.0 ([redacted]; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/132.0.6834.122 Mobile Safari/537.36",
+      "pkg": {
+        "lbl": "leboncoin",
+        "pn": "fr.leboncoin",
+        "v": "100039100",
+        "vn": "100.39.1"
+      },
+      "gdpr": {
+        "c": "[truncated GDPR string]",
+        "e": 1
+      }
+    }
+  }
 }
 ```
 
@@ -194,7 +220,8 @@ In the below schema, we can clearly highlight the relationships between the host
 - Leverage LLMs to classify hosts from installed packages
 - Also, is great to check for "requestable" permissions by parsing the AndroidApplication.xml file
 
-## Challenges
+## Talk about
+- Virtualization? How to get rid of physical links between the components
 - Root detection by apps (banking apps...)
 - SSL pinning
 - Not all TLS libs supported
