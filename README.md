@@ -1,7 +1,7 @@
 # How to Monitor Android Apps for Compliance: A Practical Example.
 
 ## Requirements
-- An android phone, pre-rooted if you wanna save some time
+- A consumer grade android phone, pre-rooted if you wanna save some time
 - A RPI4/5 or anything that can run a linux distro ARM64, with an ethernet and a WiFi interfaces
 - At least 64 GB of storage for the server, I recommend 256 GB
 - An ethernet cable to connect the server to the network
