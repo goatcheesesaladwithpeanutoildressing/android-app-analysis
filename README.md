@@ -116,9 +116,10 @@ It requires two components:
 ### Decrypt the traffic
 - Decrypt traffic: `editcap --inject-secrets tls,ssl_keys.log traffic.pcap decrypted_traffic.pcapng`
 - Generate a human readable JSON file `tshark -2 -T ek --enable-protocol communityid -Ndmn -r decrypted_traffic.pcapng > traffic.json`
-- `fx traffic.json` (or any viz tool)
 
-## Sample decrypted HTTPS request
+## Exploratory Data Analysis
+
+### Sample decrypted HTTPS request
 - POST https://aax.amazon-adsystem.com/e/msdk/ads
 - Vendor: Amazon
 - Payload contains device info
@@ -169,6 +170,19 @@ BlCADAAAAAYIAAASAMAAAAIRAIIiAAAEAAAmJICABJC4AAAQAQgkgAABUAgAIAABogSFAAAAAAFAAAAA
 AAAAABAAAAAEAMAAAIAAgAAAAAoAQAAAAAgAJCgAAAAAAgAAAAAAAAAAEAAAAAAAAAAAAAAAAQAAAAAABADFAAYAAgrKMAAwABBWUgABgACCsoA\",\"e\":1}}"
 }
 ```
+
+### Can we show relationships between hosts?
+
+In a desktop web environment, generating a piggybacking graph based on requests is quite easy since the browser provides context about the initiators, thanks to the Chrome Devtool Protocol for instance.
+However, it's much more challenging in a mobile environment. 
+- Mobile networking is more opaque.
+- Webviews, native APIs, background services etc. make it harder to correlate requests
+Yet, there are techniques to trace these requests. One approach is to analyze redirects (302) and the subsequent locations the device is instructed to request. Another method involves tracking specific request parameters (e.g., user_id=XYZ) within payloads to identify relationships between requests.
+
+In the below schema, we can clearly highlight the relationships between the hosts via the `Location` header for 302 requests.
+
+![Network Graph](./assets/network_graph.png)
+
 
 ## Static analysis
 - Besides dynamic analysis that shows active threats, we can do some static analysis to identify the landscape of possible threats
