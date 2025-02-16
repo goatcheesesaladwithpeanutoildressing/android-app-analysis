@@ -11,6 +11,8 @@
 - (Optional) A brain
 - ChatGPT
 
+  ![Architecture](./assets/architecture.png)
+
 ## Setup
 
 ### Grant root priviledges to the phone
