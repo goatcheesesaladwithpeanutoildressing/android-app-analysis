@@ -1,14 +1,24 @@
 # How to Monitor Android Apps for Compliance: A Practical Example.
 
-### Root a phone
+## Requirements
+- An android phone, pre-rooted if you wanna save some time
+- A RPI4/5 or anything that can run a linux distro, with an ethernet and a WiFi interfaces
+- At least 64 GB of storage for the server, I recommend 256 GB
+- An ethernet cable to connect the server to the network
+- A USB-[insert type] cable to connect the phone to the server
+- A computer connected to the same network
+- A keyboard
+- (Optional) A brain
+- ChatGPT
+
+### Grant root priviledges to the phone
 - Enter into recovery mode
 - Flash [Lineage OS](https://lineageos.org/)
 - Flash [Magisk](https://github.com/topjohnwu/Magisk)
 - Enable Developer Options
 - Enable USB Debugging
 
-### Setup the MITM server
-- Ideally a Raspberry PI w/ > 4Go RAM / > 64Go SD CARD. Network traffic dump will take a lot of space quickly
+### Setup the server (it will act as a man in the middle proxy)
 - Debian 12/Ubuntu-Server
 - Install Python
 - Install ADB
