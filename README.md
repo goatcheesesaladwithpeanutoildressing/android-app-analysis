@@ -1,23 +1,68 @@
-# android-app-analysis
+# How to Monitor Android Apps for Compliance: A Practical Example.
 
-## Setup your first HTTPS traffic analysis
-
-### Root a phone (Android)
-- Recovery
-- Flash Lineage OS
-- Flash Magisk
+### Root a phone
+- Enter into recovery mode
+- Flash [Lineage OS](https://lineageos.org/)
+- Flash [Magisk](https://github.com/topjohnwu/Magisk)
 - Enable Developer Options
 - Enable USB Debugging
-- Force USB File Transfer Mode
 
 ### Setup the MITM server
-- Ideally a Raspberry PI w/ > 4Go RAM / > 64Go SD CARD
-- Debian 12
+- Ideally a Raspberry PI w/ > 4Go RAM / > 64Go SD CARD. Network traffic dump will take a lot of space quickly
+- Debian 12/Ubuntu-Server
 - Install Python
 - Install ADB
 - Install Frida
 - Install Fritap
-- Setup the WAP (Wireless Accesss Point)
+
+### Turn the server into a WAP (Wireless Accesss Point)
+- It must be connected to your network via the ethernet interface (eth0) since we're going to use wlan0 interface as a client
+- `sudo apt update && sudo apt install -y hostapd dnsmasq`
+- `sudo nano /etc/hostapd/hostapd.conf`
+- Add the hotsport configuration:
+  ```yaml
+  interface=wlan0
+  driver=nl80211
+  ssid=<HotspotName>
+  hw_mode=g
+  channel=7
+  wmm_enabled=0
+  auth_algs=1
+  wpa=2
+  wpa_passphrase=<SrongPassword8CharMin>
+  wpa_key_mgmt=WPA-PSK
+  rsn_pairwise=CCMP
+  ```
+- `sudo nano /etc/default/hostapd` & uncomment `DAEMON_CONF="/etc/hostapd/hostapd.conf"`
+- `sudo nano /etc/dnsmasq.conf`
+- Add the following:
+  ```yaml
+  interface=wlan0
+  dhcp-range=192.168.4.2,192.168.4.20,255.255.255.0,24h
+  dhcp-option=3,192.168.4.1
+  dhcp-option=6,8.8.8.8,8.8.4.4
+  ```
+- `sudo nano /etc/dhcpcd.conf`
+- Add the following:
+  ```yaml
+  interface wlan0
+  static ip_address=192.168.4.1/24
+  nohook wpa_supplicant
+  ```
+- Enable ip forwarding with `sudo nano /etc/sysctl.conf` & uncomment `net.ipv4.ip_forward=1`
+- `sudo iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE`
+  ```sh
+  sudo apt install -y iptables-persistent
+  sudo netfilter-persistent save
+  sudo netfilter-persistent reload
+  ```
+  ```sh
+  sudo systemctl unmask hostapd
+  sudo systemctl enable hostapd
+  sudo systemctl start hostapd
+  sudo systemctl restart dnsmasq
+  ```
+- (Optional, if conflict on port :53): `sudo nano /etc/systemd/resolved.conf` & add `DNSStubListener=no`
 
 ### Connect phone to MITM
 - Connect to the WAP
